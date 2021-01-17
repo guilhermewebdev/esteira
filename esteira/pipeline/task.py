@@ -17,7 +17,7 @@ class Task:
             ''
         ))
 
-    def __init__(self, external_envs={}, image=None):
+    def __init__(self, image=None, external_envs={}):
         if image:
             self.image = image
         self.add_external_env(external_envs)
