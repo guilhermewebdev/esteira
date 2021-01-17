@@ -1,6 +1,6 @@
 import os
 from git import Repo
-
+from pathlib import Path
 
 class Runner:
     stages = []
@@ -9,8 +9,8 @@ class Runner:
     variables = {}
     repo = None
 
-    def __init__(self, stages, repo_dir, stage_classes, services=[], variables={}):
-        self.repo = Repo(repo_dir)
+    def __init__(self, stage_classes, stages,  repo_dir=None, services=[], variables={}):
+        self.repo = Repo(str(repo_dir if repo_dir else Path(__file__).parent.absolute()))
         self.stages = stages
         self.stage_classes = stage_classes
         self.services = services
