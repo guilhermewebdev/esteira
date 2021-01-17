@@ -11,11 +11,12 @@ class Service(Task):
             self.host = image_name.split(':')[0]
         super().__init__(external_envs=external_envs, image=image_name)
 
-    def run(self, variables={}):
-        variables.update(self.variables)
+    def run(self):
         self.container = self.client.containers.run(
             self.image,
             detach=True,
-            environment=variables,
+            stdin_open=True,
+            environment=self.variables,
             hostname=str(self.host)
         )
+        self.container.start()
