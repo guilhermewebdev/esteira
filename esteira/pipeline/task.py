@@ -27,6 +27,13 @@ class Task:
         envs.update(current)
         self.variables.update(envs)
 
+    def run(self):
+        self.container = self.client.containers.run(
+            self.image,
+            detach=True,
+            environment=self.variables,
+        )
+
     def destroy(self):
         self.container.stop()
-        self.container.remove()
+        self.container.remove(force=True, v=True)
