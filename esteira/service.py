@@ -1,6 +1,5 @@
 from .task import Task
 
-
 class Service(Task):
     service = None
     host = ''
