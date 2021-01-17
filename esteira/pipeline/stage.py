@@ -6,19 +6,19 @@ class Stage(Task):
     script = []
     repo_dir = ''
 
-    def __init__(self, image, repo_dir, external_envs={}):
+    def __init__(self, repo_dir, image=None, external_envs={}):
+        self.repo_dir = repo_dir
         super().__init__(external_envs=external_envs, image=image)
 
-    def run_script(self):
-        script_list = self.before_script + self.script
+    def each_script(self, scripts):
         image = self.client.images.get(self.image)
-        for script in script_list:
+        for script in scripts:
             print(f'> {script}')
             self.container = self.client.containers.run(
                 image,
                 command=script,
-                stdin_open=False,
                 stderr=True,
+                stdin_open=False,
                 working_dir='/builds',
                 volumes={
                     self.repo_dir: {
@@ -36,9 +36,11 @@ class Stage(Task):
             assert response.get('StatusCode') == 0, 'Code returned ' + str(response.get('StatusCode'))
             assert response.get('Error') == None, str(response.get('Error'))
             image = self.container.commit(f'{self.__class__.__name__}'.lower())
+        
 
     def run(self):
-        self.run_script()
+        self.each_script(self.before_script)
+        self.each_script(self.script)
         self.destroy()
 
 
